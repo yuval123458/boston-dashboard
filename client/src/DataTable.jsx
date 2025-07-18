@@ -126,7 +126,6 @@ const DealsTable = ({ loading, setLoading }) => {
         </tbody>
       </table>
 
-      {/* Pagination */}
       <div className="mt-4 flex justify-between items-center">
         <div>
           Page {table.getState().pagination.pageIndex + 1} of{" "}
