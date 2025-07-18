@@ -14,5 +14,4 @@ async function connectToMongo() {
 function getDb() {
   return db;
 }
-
 module.exports = { connectToMongo, getDb };
