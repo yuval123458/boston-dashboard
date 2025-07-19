@@ -17,6 +17,8 @@ router.get("/summary", async (req, res) => {
           totalDeals: { $sum: 1 },
           uniqueSources: { $addToSet: "$transactionSourceName" },
           totalNoMetadata: { $sum: "$progress.TOTAL_JOBS_DONT_HAVE_METADATA" },
+          totalJobs: { $sum: "$progress.TOTAL_JOBS_IN_FEED" },
+          totalEnriched: { $sum: "$progress.TOTAL_JOBS_SENT_TO_ENRICH" },
         },
       },
       {
@@ -26,8 +28,51 @@ router.get("/summary", async (req, res) => {
           totalNoCoords: 1,
           totalFailed: 1,
           totalDeals: 1,
-          uniqueSources: { $size: "$uniqueSources" },
+          totalJobs: 1,
           totalNoMetadata: 1,
+          totalEnriched: 1,
+          uniqueSources: { $size: "$uniqueSources" },
+          avgJobsPerFeed: {
+            $cond: [
+              { $gt: ["$totalDeals", 0] },
+              { $divide: ["$totalJobs", "$totalDeals"] },
+              0,
+            ],
+          },
+          indexingSuccessRate: {
+            $cond: [
+              { $gt: ["$totalJobs", 0] },
+              {
+                $multiply: [
+                  {
+                    $divide: [
+                      { $subtract: ["$totalJobs", "$totalFailed"] },
+                      "$totalJobs",
+                    ],
+                  },
+                  100,
+                ],
+              },
+              0,
+            ],
+          },
+          metadataCoverageRate: {
+            $cond: [
+              { $gt: ["$totalJobs", 0] },
+              {
+                $multiply: [
+                  {
+                    $divide: [
+                      { $subtract: ["$totalJobs", "$totalNoMetadata"] },
+                      "$totalJobs",
+                    ],
+                  },
+                  100,
+                ],
+              },
+              0,
+            ],
+          },
         },
       },
     ];
