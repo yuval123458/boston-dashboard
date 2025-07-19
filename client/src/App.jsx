@@ -1,7 +1,7 @@
 import { useState } from "react";
-import NavBar from "./NavBar";
-import AssistantChat from "./AssistantChat";
-import Dashboard from "./Dashboard";
+import NavBar from "./components/NavBar";
+import AssistantChat from "./components/AssistantChat";
+import Dashboard from "./components/Dashboard";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 function App() {
