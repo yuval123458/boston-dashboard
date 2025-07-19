@@ -5,8 +5,11 @@ import {
   FaMapMarkerAlt,
   FaCheckCircle,
   FaUsers,
+  FaChartLine,
+  FaPercentage,
 } from "react-icons/fa";
 import { MdSmsFailed, MdWarning } from "react-icons/md";
+import { GiReceiveMoney } from "react-icons/gi";
 
 const Cards = ({ summary }) => {
   return (
@@ -40,6 +43,21 @@ const Cards = ({ summary }) => {
         title="Failed Enrichment"
         value={summary.totalNoMetadata}
         icon={<MdWarning />}
+      />
+      <StatCard
+        title="Avg. Jobs per Feed"
+        value={summary.avgJobsPerFeed?.toFixed(0)}
+        icon={<FaChartLine />}
+      />
+      <StatCard
+        title="Indexing Success Rate"
+        value={`${summary.indexingSuccessRate?.toFixed(1)}%`}
+        icon={<FaPercentage />}
+      />
+      <StatCard
+        title="Metadata Coverage Rate"
+        value={`${summary.metadataCoverageRate?.toFixed(1)}%`}
+        icon={<GiReceiveMoney />}
       />
     </>
   );
