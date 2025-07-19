@@ -15,7 +15,7 @@ AI - OpenAi's GPT-4.
 - shows deltas and total counts: successfully indexed jobs, failed jobs, records without coordinates, metadata gaps, added last months jobs.
 - includes top clients and deal performance with pagination.
 - decided not to use lazy loading because i dont think it provides the best user experience,
-  even though the page loads without the table being fetched as its on the bottom of the screen, so the user
+  even though the page loads without the table being fetched as its on the bottom of the screen, the user
   can see the top metrics and it won't block the initial render. fetching data upfront ensures that the user will
   see the table when he wil scroll down to it.
 
