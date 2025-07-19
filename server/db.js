@@ -1,4 +1,3 @@
-// backend/db.js
 const { MongoClient } = require("mongodb");
 require("dotenv").config();
 
@@ -7,11 +6,14 @@ let db;
 
 async function connectToMongo() {
   await client.connect();
-  db = client.db("botson");
+  db = client.db("boston");
   console.log("Connected to MongoDB");
 }
 
 function getDb() {
+  if (!db) {
+    throw new Error("Database not initialized");
+  }
   return db;
 }
 module.exports = { connectToMongo, getDb };

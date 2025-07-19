@@ -1,14 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { MongoClient } = require("mongodb");
-
-const uri = process.env.MONGO_URI;
-const client = new MongoClient(uri);
+const { getDb } = require("../db");
 
 router.get("/summary", async (req, res) => {
   try {
-    await client.connect();
-    const db = client.db("boston");
+    const db = getDb();
     const collection = db.collection("transformedFeeds");
 
     const pipeline = [
@@ -20,6 +16,7 @@ router.get("/summary", async (req, res) => {
           totalFailed: { $sum: "$progress.TOTAL_JOBS_FAIL_INDEXED" },
           totalDeals: { $sum: 1 },
           uniqueSources: { $addToSet: "$transactionSourceName" },
+          totalNoMetadata: { $sum: "$progress.TOTAL_JOBS_DONT_HAVE_METADATA" },
         },
       },
       {
@@ -30,6 +27,7 @@ router.get("/summary", async (req, res) => {
           totalFailed: 1,
           totalDeals: 1,
           uniqueSources: { $size: "$uniqueSources" },
+          totalNoMetadata: 1,
         },
       },
     ];
@@ -44,12 +42,11 @@ router.get("/summary", async (req, res) => {
 
 router.get("/monthly", async (req, res) => {
   try {
-    await client.connect();
-    const db = client.db("boston");
+    const db = getDb();
     const collection = db.collection("transformedFeeds");
 
-    const sixMonthsAgo = new Date();
-    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
 
     const pipeline = [
       {
@@ -59,7 +56,7 @@ router.get("/monthly", async (req, res) => {
       },
       {
         $match: {
-          parsedTimestamp: { $gte: sixMonthsAgo },
+          parsedTimestamp: { $gte: threeMonthsAgo },
           status: "completed",
         },
       },
@@ -95,9 +92,7 @@ router.get("/monthly", async (req, res) => {
 
 router.get("/by-country", async (req, res) => {
   try {
-    console.log("by country");
-    await client.connect();
-    const db = client.db("boston");
+    const db = getDb();
     const collection = db.collection("transformedFeeds");
 
     const pipeline = [
@@ -132,8 +127,7 @@ router.get("/by-country", async (req, res) => {
 
 router.get("/top-deals", async (req, res) => {
   try {
-    await client.connect();
-    const db = client.db("boston");
+    const db = getDb();
     const collection = db.collection("transformedFeeds");
 
     const pipeline = [

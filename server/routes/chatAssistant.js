@@ -2,15 +2,10 @@ require("dotenv").config();
 const { OpenAI } = require("openai");
 const express = require("express");
 const router = express.Router();
-const { MongoClient } = require("mongodb");
-
-const uri = process.env.MONGO_URI;
-const client = new MongoClient(uri);
+const { getDb } = require("../db");
 
 router.post("/query", async (req, res) => {
   const userMessage = req.body.message;
-
-  console.log(userMessage);
 
   const openai = new OpenAI({
     apiKey: process.env.OPENAI_KEY,
@@ -69,7 +64,7 @@ Response:
 
 
  you are questioned by account managers that work in a company called Boston.ai,
- you need to answer politely and informative as possible.
+ you need to answer politely as possible.
 `;
 
   try {
@@ -107,8 +102,8 @@ Please try rephrasing your question using clear metrics, date ranges, or filters
       });
     }
 
-    await client.connect();
-    const collection = client.db("boston").collection("transformedFeeds");
+    const db = getDb();
+    const collection = db.collection("transformedFeeds");
 
     const isAggregation = Array.isArray(query);
 
@@ -123,7 +118,7 @@ Please try rephrasing your question using clear metrics, date ranges, or filters
 You are a business data assistant. The user asked: "${userMessage}"
 The results are from a MongoDB aggregation query.
 
-Summarize the numeric insight clearly and politely (total failed jobs, average jobs per feed). Do not list documents.
+Summarize the numeric insight clearly and politely. Do not list documents.
 
 Results:
 ${JSON.stringify(results, null, 2)}
@@ -132,7 +127,7 @@ ${JSON.stringify(results, null, 2)}
 You are a business data assistant. The user asked: "${userMessage}"
 The results are from a MongoDB find query.
 
-Start your answer with a title like: "📄 Matched Documents Summary".
+Start your answer with a title like: "Matched Documents Summary".
 
 Summarize key fields and values observed across the documents. If there's a pattern (all from US, similar job counts), highlight it. Keep it short and helpful.
 

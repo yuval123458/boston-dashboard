@@ -2,12 +2,14 @@ import React from "react";
 import StatCard from "./StatCard";
 import Charts from "./Charts";
 import DataTable from "./DataTable";
+import Cards from "./Cards";
 import { useState, useEffect } from "react";
 import {
   FaDatabase,
   FaMapMarkerAlt,
   FaCheckCircle,
   FaUsers,
+  FaSpinner,
 } from "react-icons/fa";
 import { MdOutlineSmsFailed } from "react-icons/md";
 
@@ -18,7 +20,6 @@ const Dashboard = () => {
   const [jobsLoading, setJobsLoading] = useState(true);
   const [countryData, setCountryData] = useState([]);
   const [countryLoading, setCountryLoading] = useState(true);
-  const [dataTableLoading, setDataTableLoading] = useState(true);
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -61,14 +62,17 @@ const Dashboard = () => {
   }, []);
 
   if (summaryLoading || jobsLoading || countryLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <FaSpinner className="animate-spin text-4xl text-blue-500" />
+      </div>
+    );
   }
 
   return (
     <div className="flex flex-col gap-8">
-      {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <StatCard
+        {/* <StatCard
           title="Total Records"
           value={summary.totalRecords}
           icon={<FaDatabase />}
@@ -92,10 +96,11 @@ const Dashboard = () => {
           title="Failed Indexing"
           value="200"
           icon={<MdOutlineSmsFailed />}
-        />
+        /> */}
+        <Cards summary={summary} />
       </div>
       <Charts lineData={monthlyJobsData} countryData={countryData} />
-      <DataTable loading={dataTableLoading} setLoading={setDataTableLoading} />
+      <DataTable />
     </div>
   );
 };

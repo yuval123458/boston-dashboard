@@ -7,11 +7,13 @@ import {
   getSortedRowModel,
   flexRender,
 } from "@tanstack/react-table";
+import { FaSpinner } from "react-icons/fa";
 import "./DataTable.css";
 
-const DealsTable = ({ loading, setLoading }) => {
+const DataTable = () => {
   const [data, setData] = useState([]);
   const [globalFilter, setGlobalFilter] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchTopDeals = async () => {
@@ -77,6 +79,14 @@ const DealsTable = ({ loading, setLoading }) => {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center py-10">
+        <FaSpinner className="animate-spin text-2xl text-blue-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="mt-8 bg-white p-4 shadow rounded-xl">
@@ -152,4 +162,4 @@ const DealsTable = ({ loading, setLoading }) => {
   );
 };
 
-export default DealsTable;
+export default DataTable;
