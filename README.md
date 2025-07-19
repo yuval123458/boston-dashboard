@@ -4,8 +4,8 @@
 
 Please add a .env file inside the server folder with keys sent in the response mail.
 git clone https://github.com/yuval123458/boston-dashboard.git
-cd boston-dashboard
 
+cd boston-dashboard
 cd server
 npm install
 
